@@ -23,11 +23,6 @@
  */
 package com.ixortalk.assetmgmt.validation;
 
-import java.io.IOException;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JsonLoader;
@@ -39,13 +34,16 @@ import com.ixortalk.assetmgmt.domain.Asset;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import java.io.IOException;
+
 import static org.apache.commons.logging.LogFactory.getLog;
 
 
 public class ValidAssetValidator implements ConstraintValidator<ValidAsset, Asset> {
 
     private static final Log log = getLog(ValidAssetValidator.class);
- 
 
     @Autowired
     private JsonSchema jsonSchema;

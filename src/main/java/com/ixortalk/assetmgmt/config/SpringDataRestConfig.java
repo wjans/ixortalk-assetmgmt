@@ -24,12 +24,19 @@
 package com.ixortalk.assetmgmt.config;
 
 import com.ixortalk.assetmgmt.rest.converter.AssetIdConverter;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 
 @Configuration
 public class SpringDataRestConfig extends RepositoryRestMvcConfiguration {
+
+    public SpringDataRestConfig(ApplicationContext context, ObjectFactory<ConversionService> conversionService) {
+        super(context, conversionService);
+    }
 
     @Bean
     public AssetIdConverter idConverter() {

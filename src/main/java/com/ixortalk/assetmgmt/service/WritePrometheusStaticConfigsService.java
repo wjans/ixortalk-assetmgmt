@@ -23,15 +23,6 @@
  */
 package com.ixortalk.assetmgmt.service;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ixortalk.assetmgmt.domain.Asset;
 import com.ixortalk.assetmgmt.rest.AssetRepository;
@@ -42,9 +33,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static java.nio.file.Files.move;
@@ -52,10 +50,10 @@ import static java.nio.file.Files.newBufferedWriter;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.Validate.notNull;
 import static org.springframework.beans.BeanUtils.isSimpleValueType;
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 import static org.springframework.security.core.context.SecurityContextHolder.createEmptyContext;
+import static org.springframework.util.Assert.notNull;
 
 @Named
 @EnableConfigurationProperties(IxorTalkConfigProperties.class)

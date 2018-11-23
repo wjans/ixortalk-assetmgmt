@@ -23,6 +23,33 @@
  */
 package com.ixortalk.assetmgmt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ixortalk.assetmgmt.domain.Asset;
+import com.ixortalk.assetmgmt.domain.AssetId;
+import com.ixortalk.assetmgmt.rest.AssetRepository;
+import com.ixortalk.assetmgmt.rest.prometheus.IxorTalkConfigProperties;
+import com.ixortalk.test.data.CleanCrudRepositoriesRule;
+import com.ixortalk.test.oauth2.OAuth2EmbeddedTestServer;
+import com.jayway.restassured.RestAssured;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.inject.Inject;
+
 import static com.ixortalk.assetmgmt.TestConstants.ASSETS_BASE_PATH;
 import static com.ixortalk.assetmgmt.domain.AssetId.assetId;
 import static com.ixortalk.test.util.FileUtil.fileContent;
@@ -33,34 +60,6 @@ import static com.mongodb.util.JSON.parse;
 import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import javax.inject.Inject;
-
-import com.ixortalk.assetmgmt.domain.AssetId;
-import com.ixortalk.assetmgmt.rest.AssetRepository;
-import org.bson.Document;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ixortalk.assetmgmt.domain.Asset;
-import com.ixortalk.assetmgmt.rest.prometheus.IxorTalkConfigProperties;
-import com.ixortalk.test.data.CleanCrudRepositoriesRule;
-import com.ixortalk.test.oauth2.OAuth2EmbeddedTestServer;
-import com.jayway.restassured.RestAssured;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AssetMgmtApplication.class, OAuth2EmbeddedTestServer.class, CleanCrudRepositoriesRule.class}, webEnvironment = RANDOM_PORT)

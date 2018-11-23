@@ -23,26 +23,16 @@
  */
 package com.ixortalk.assetmgmt.rest;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
 import com.ixortalk.assetmgmt.domain.Asset;
 import com.ixortalk.assetmgmt.rest.dto.BulkUpdate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.collect.Iterables.size;
 import static com.ixortalk.assetmgmt.domain.Asset.assetWithProperties;
@@ -52,9 +42,7 @@ import static java.util.stream.StreamSupport.stream;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.ResponseEntity.notFound;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
+import static org.springframework.http.ResponseEntity.*;
 
 @RepositoryRestController
 @RequestMapping("/assets")
@@ -87,7 +75,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     @PutMapping(value = "/{id}/properties", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProperties(@PathVariable String id, @RequestBody Map<String, Object> newProperties) {
-        return Optional.ofNullable(assetRepository.findOne(assetId(id)))
+        return assetRepository.findById(assetId(id))
                 .map(existingAsset -> {
                     existingAsset.getAssetProperties().putAll(newProperties);
                     assetRepository.save(existingAsset);
@@ -104,14 +92,14 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     @PatchMapping(value = "/bulk", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> bulkUpdate(@RequestBody BulkUpdate bulkUpdate) {
-        Iterable<Asset> allAssets = assetRepository.findAll(bulkUpdate.getAssetIds());
+        Iterable<Asset> allAssets = assetRepository.findAllById(bulkUpdate.getAssetIds());
 
         if (size(allAssets) != bulkUpdate.getAssetIds().size()) {
             return status(NOT_FOUND)
                     .body("Following assets cannot be found: " +
                             bulkUpdate.getAssetIds()
                                     .stream()
-                                    .filter(assetId -> !assetRepository.exists(assetId))
+                                    .filter(assetId -> !assetRepository.existsById(assetId))
                                     .collect(toList()));
         }
 
